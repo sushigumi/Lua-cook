@@ -33,6 +33,7 @@ class Context {
  public:
   Context(lua_State* L, const Logger& logger) : L_(L), logger_(logger) {}
 
+  // Perform a protected call.
   int pcall(int narg, int nres) {
     int base = lua_gettop(L_) - narg;   // function index
     lua_pushcfunction(L_, msghandler);  // push message handler
@@ -43,6 +44,7 @@ class Context {
     return status;
   }
 
+  // Get the error message on top of the stack and log it.
   int report(int status) {
     if (status != LUA_OK) {
       const char* msg = lua_tostring(L_, -1);
@@ -57,6 +59,7 @@ class Context {
     return status;
   }
 
+  // Print items on the stack if it has less than `LUA_MINSTACK` items.
   void printStack() {
     int n = top();
     if (n > 0) {
@@ -69,10 +72,17 @@ class Context {
     }
   }
 
+  // Load (compile) the specified buffer.
   int loadBuffer(const std::string& buffer, const std::string& name) {
     return luaL_loadbuffer(L_, buffer.c_str(), buffer.size(), name.c_str());
   }
 
+  // Load (compile) the specified file.
+  int loadFile(const std::string& fname) {
+    return luaL_loadfile(L_, fname.c_str());
+  }
+
+  // Push a string to the top of the stack.
   const char* push(const std::string& str) {
     return lua_pushstring(L_, str.c_str());
   }
@@ -99,7 +109,19 @@ const char* get_prompt(bool firstline) {
 
 }  // namespace
 
-int ReadEvalPrintLoop::execute(lua_State* L, const Logger& logger) {
+ExecuteScript::ExecuteScript(const std::string& script) : script_(script) {}
+
+bool ExecuteScript::execute(lua_State* L, const Logger& logger) {
+  Context context(L, logger);
+
+  int status = context.loadFile(script_);
+  if (status == LUA_OK) {
+    status = context.pcall(0, LUA_MULTRET);
+  }
+  return status;
+}
+
+bool DoReadEvalPrintLoop::execute(lua_State* L, const Logger& logger) {
   Context context(L, logger);
 
   int status;
@@ -166,5 +188,5 @@ int ReadEvalPrintLoop::execute(lua_State* L, const Logger& logger) {
     chunk_ = "";
   }
 
-  return LUA_OK;
+  return true;
 }

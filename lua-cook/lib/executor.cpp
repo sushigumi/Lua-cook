@@ -39,7 +39,6 @@ void Executor::terminate() {
   state_ = nullptr;
 }
 
-Executor& luacook::operator<<(Executor& executor, ExecutionItem&& item) {
-  item.execute(executor.state_, executor.logger_);
-  return executor;
+bool Executor::execute(ExecutionItem&& item) {
+  return item.execute(state_, logger_);
 }

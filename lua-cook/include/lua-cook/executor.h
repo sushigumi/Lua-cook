@@ -21,7 +21,7 @@ class Executor {
   // Terminates the executor and closes the lua state.
   void terminate();
 
-  friend Executor& operator<<(Executor& executor, ExecutionItem&& item);
+  bool execute(ExecutionItem&& item);
 
  private:
   const Logger& logger_;

@@ -10,12 +10,24 @@ class Logger;
 
 class ExecutionItem {
  public:
-  virtual int execute(lua_State* L, const Logger& logger) = 0;
+  virtual bool execute(lua_State* L, const Logger& logger) = 0;
 };
 
-class ReadEvalPrintLoop : public ExecutionItem {
+class ExecuteScript : public ExecutionItem {
  public:
-  int execute(lua_State* L, const Logger& logger) override;
+  ExecuteScript(const std::string& script);
+
+  // Execute the item.
+  bool execute(lua_State* L, const Logger& logger) override;
+
+ private:
+  std::string script_;
+};
+
+class DoReadEvalPrintLoop : public ExecutionItem {
+ public:
+  // Execute the item.
+  bool execute(lua_State* L, const Logger& logger) override;
 
  private:
   std::string chunk_;

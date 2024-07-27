@@ -23,9 +23,11 @@ int main(int argc, char** argv) {
   }
 
   if (argc == 1) {
-    executor << ReadEvalPrintLoop();
+    if (!executor.execute(DoReadEvalPrintLoop())) {
+      logger.error("Unable to execute REPL.");
+    }
   } else {
-    // executor.execute(std::filesystem::path(argv[1]));
+    executor.execute(ExecuteScript(argv[1]));
   }
 
   executor.terminate();

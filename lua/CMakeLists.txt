@@ -35,8 +35,16 @@ set(LUA_SRCS
     src/lzio.c
 )
 
-set_source_files_properties(${LUA_SRCS} PROPERTIES LANGUAGE CXX )
+set_source_files_properties(${LUA_SRCS} PROPERTIES LANGUAGE CXX)
 
-add_library(lua SHARED ${LUA_SRCS})
+add_library(lualib SHARED ${LUA_SRCS})
 
-target_include_directories(lua PUBLIC src)
+target_include_directories(lualib PUBLIC src)
+
+set_source_files_properties(src/lua.c PROPERTIES LANGUAGE CXX)
+
+add_executable(lua
+    src/lua.c
+)
+
+target_link_libraries(lua PUBLIC lualib)

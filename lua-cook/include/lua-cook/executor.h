@@ -8,6 +8,7 @@
 namespace luacook {
 
 class Logger;
+class ExecutionItem;
 
 class Executor {
  public:
@@ -20,18 +21,10 @@ class Executor {
   // Terminates the executor and closes the lua state.
   void terminate();
 
-  bool execute(const std::string& script);
-
-  // Execute the lua file that exists at the specified path.
-  bool execute(const std::filesystem::path& path);
+  friend Executor& operator<<(Executor& executor, ExecutionItem&& item);
 
  private:
-  int pcall(int narg, int nres);
-
-  int report(int status);
-
   const Logger& logger_;
-
   lua_State* state_ = nullptr;
 };
 

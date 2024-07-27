@@ -7,6 +7,7 @@
 #define lua_c
 
 #include "lprefix.h"
+#include <iostream>
 
 
 #include <stdio.h>

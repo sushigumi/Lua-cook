@@ -1,3 +1,6 @@
+#include <iostream>
+
+#include "lua-cook/execution_items.h"
 #include "lua-cook/executor.h"
 #include "lua-cook/logger.h"
 
@@ -5,7 +8,9 @@ using namespace luacook;
 
 class SimpleLogger : public Logger {
  public:
-  void error() const override {}
+  void error(const std::string& msg) const override {
+    std::cerr << msg << "\n";
+  }
   void info() const override {}
   void result() const override {}
 };
@@ -17,7 +22,11 @@ int main(int argc, char** argv) {
     return 1;
   }
 
-  executor.execute(std::filesystem::path(argv[1]));
+  if (argc == 1) {
+    executor << ReadEvalPrintLoop();
+  } else {
+    // executor.execute(std::filesystem::path(argv[1]));
+  }
 
   executor.terminate();
 

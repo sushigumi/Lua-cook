@@ -27,7 +27,9 @@ int main(int argc, char** argv) {
       logger.error("Unable to execute REPL.");
     }
   } else {
-    executor.execute(ExecuteScript(argv[1]));
+    if (!executor.execute(ExecuteScript(argv[1]))) {
+      logger.error("Unable to execute script.");
+    }
   }
 
   executor.terminate();

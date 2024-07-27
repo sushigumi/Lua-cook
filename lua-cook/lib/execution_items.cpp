@@ -118,7 +118,8 @@ bool ExecuteScript::execute(lua_State* L, const Logger& logger) {
   if (status == LUA_OK) {
     status = context.pcall(0, LUA_MULTRET);
   }
-  return status;
+
+  return status == LUA_OK;
 }
 
 bool DoReadEvalPrintLoop::execute(lua_State* L, const Logger& logger) {
